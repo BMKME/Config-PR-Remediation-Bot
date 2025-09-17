@@ -1,0 +1,25 @@
+{
+  "timestamp": "2025-08-29T11:28:24.207208Z",
+  "tests": [
+    {
+      "name": "health_check",
+      "status": "ERROR",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=5)"
+    },
+    {
+      "name": "rules",
+      "status": "ERROR",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=5)"
+    },
+    {
+      "name": "analysis",
+      "status": "ERROR",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=10)"
+    },
+    {
+      "name": "full_analysis",
+      "status": "ERROR",
+      "error": "HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=10)"
+    }
+  ]
+}

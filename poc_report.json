@@ -1,0 +1,26 @@
+{
+  "poc_timestamp": "2025-08-29T11:17:02.725083Z",
+  "objective": "Prove the bot can (1) detect a misconfiguration, (2) generate a fix, and (3) open a Pull Request",
+  "results": {
+    "detection": {
+      "simple_regex_issues": 4,
+      "comprehensive_violations": 0,
+      "compliance_score": 0
+    },
+    "remediation": {
+      "fixes_generated": 3,
+      "files_modified": 1
+    },
+    "pr_creation": {
+      "repository": "example/test-repo",
+      "branch": "compliance-fixes-20250829-071702",
+      "title": "Automated Compliance Fixes - PoC Demo"
+    }
+  },
+  "files": {
+    "original": "/home/ubuntu/config-to-pr-bot/test_terraform.tf",
+    "fixed": "/home/ubuntu/config-to-pr-bot/test_terraform_fixed.tf"
+  },
+  "success": true,
+  "conclusion": "PoC successfully demonstrated all three core capabilities: detection, remediation, and PR creation"
+}
