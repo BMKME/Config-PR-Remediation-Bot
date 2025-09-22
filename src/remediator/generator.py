@@ -1,3 +1,17 @@
+# Copyright 2024 Manus AI
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """
 Remediation code generator for compliance violations
 """
@@ -46,7 +60,7 @@ class RemediationGenerator:
         Returns:
             Dict containing generated fixes
         """
-        self.logger.info(f"Generating fixes for {len(violations)} violations")
+        self.logger.info(f"Starting analysis for {len(violations)} violations")
         
         fixes = []
         summary = {
@@ -81,7 +95,9 @@ class RemediationGenerator:
         return result
     
     def _generate_fix(self, violation: Dict[str, Any], config_type: str) -> Optional[Dict[str, Any]]:
-        """Generate a fix for a single violation"""
+        """
+        Generate a fix for a single violation
+        """
         
         rule_id = violation.get('rule_id')
         if rule_id not in self.remediation_handlers:
@@ -96,7 +112,9 @@ class RemediationGenerator:
             return None
     
     def fix_s3_public_access_block(self, violation: Dict[str, Any], config_type: str) -> Dict[str, Any]:
-        """Generate fix for S3 public access block violation"""
+        """
+        Generate fix for S3 public access block violation
+        """
         
         if config_type == 'terraform':
             bucket_name = violation.get('resource_name', 'example-bucket')
@@ -109,7 +127,8 @@ resource "aws_s3_bucket_public_access_block" "{{ bucket_name }}_pab" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
-}''')
+}
+''')
             
             code = template.render(bucket_name=bucket_name)
             
@@ -127,7 +146,9 @@ resource "aws_s3_bucket_public_access_block" "{{ bucket_name }}_pab" {
         return None
     
     def fix_s3_public_read(self, violation: Dict[str, Any], config_type: str) -> Dict[str, Any]:
-        """Generate fix for S3 public read access violation"""
+        """
+        Generate fix for S3 public read access violation
+        """
         
         if config_type == 'terraform':
             bucket_name = violation.get('resource_name', 'example-bucket')
@@ -146,7 +167,9 @@ resource "aws_s3_bucket_public_access_block" "{{ bucket_name }}_pab" {
         return None
     
     def fix_s3_public_write(self, violation: Dict[str, Any], config_type: str) -> Dict[str, Any]:
-        """Generate fix for S3 public write access violation"""
+        """
+        Generate fix for S3 public write access violation
+        """
         
         if config_type == 'terraform':
             bucket_name = violation.get('resource_name', 'example-bucket')
@@ -165,7 +188,9 @@ resource "aws_s3_bucket_public_access_block" "{{ bucket_name }}_pab" {
         return None
     
     def fix_s3_ssl_requests_only(self, violation: Dict[str, Any], config_type: str) -> Dict[str, Any]:
-        """Generate fix for S3 SSL requests only violation"""
+        """
+        Generate fix for S3 SSL requests only violation
+        """
         
         if config_type == 'terraform':
             bucket_name = violation.get('resource_name', 'example-bucket')
@@ -194,7 +219,8 @@ resource "aws_s3_bucket_policy" "{{ bucket_name }}_ssl_only" {
       }
     ]
   })
-}''')
+}
+''')
             
             code = template.render(bucket_name=bucket_name)
             
@@ -212,7 +238,9 @@ resource "aws_s3_bucket_policy" "{{ bucket_name }}_ssl_only" {
         return None
     
     def fix_root_user_access_keys(self, violation: Dict[str, Any], config_type: str) -> Dict[str, Any]:
-        """Generate fix for root user access keys violation"""
+        """
+        Generate fix for root user access keys violation
+        """
         
         return {
             'rule_id': violation['rule_id'],
@@ -226,7 +254,9 @@ resource "aws_s3_bucket_policy" "{{ bucket_name }}_ssl_only" {
         }
     
     def fix_security_group_unrestricted_access(self, violation: Dict[str, Any], config_type: str) -> Dict[str, Any]:
-        """Generate fix for security group unrestricted access violation"""
+        """
+        Generate fix for security group unrestricted access violation
+        """
         
         if config_type == 'terraform':
             sg_name = violation.get('resource_name', 'example-sg')
@@ -245,7 +275,9 @@ resource "aws_s3_bucket_policy" "{{ bucket_name }}_ssl_only" {
         return None
     
     def fix_security_group_ssh_access(self, violation: Dict[str, Any], config_type: str) -> Dict[str, Any]:
-        """Generate fix for security group SSH access violation"""
+        """
+        Generate fix for security group SSH access violation
+        """
         
         if config_type == 'terraform':
             sg_name = violation.get('resource_name', 'example-sg')
@@ -258,7 +290,8 @@ ingress {
   protocol    = "tcp"
   cidr_blocks = ["10.0.0.0/8"]  # Replace with your office/VPN IP range
   description = "SSH access from trusted networks only"
-}''')
+}
+''')
             
             return {
                 'rule_id': violation['rule_id'],
@@ -274,7 +307,9 @@ ingress {
         return None
     
     def fix_security_group_rdp_access(self, violation: Dict[str, Any], config_type: str) -> Dict[str, Any]:
-        """Generate fix for security group RDP access violation"""
+        """
+        Generate fix for security group RDP access violation
+        """
         
         if config_type == 'terraform':
             sg_name = violation.get('resource_name', 'example-sg')
@@ -287,7 +322,8 @@ ingress {
   protocol    = "tcp"
   cidr_blocks = ["10.0.0.0/8"]  # Replace with your office/VPN IP range
   description = "RDP access from trusted networks only"
-}''')
+}
+''')
             
             return {
                 'rule_id': violation['rule_id'],
@@ -303,7 +339,9 @@ ingress {
         return None
     
     def fix_access_control_policy(self, violation: Dict[str, Any], config_type: str) -> Dict[str, Any]:
-        """Generate fix for access control policy violation"""
+        """
+        Generate fix for access control policy violation
+        """
         
         return {
             'rule_id': violation['rule_id'],
@@ -317,13 +355,17 @@ ingress {
         }
     
     def fix_remote_access_management(self, violation: Dict[str, Any], config_type: str) -> Dict[str, Any]:
-        """Generate fix for remote access management violation"""
+        """
+        Generate fix for remote access management violation
+        """
         
         # This is similar to security group fixes
         return self.fix_security_group_ssh_access(violation, config_type)
     
     def fix_access_permissions(self, violation: Dict[str, Any], config_type: str) -> Dict[str, Any]:
-        """Generate fix for access permissions violation"""
+        """
+        Generate fix for access permissions violation
+        """
         
         if config_type == 'terraform':
             user_name = violation.get('resource_name', 'example-user')
@@ -336,7 +378,8 @@ resource "aws_iam_group_membership" "{{ user_name }}_membership" {
   group = aws_iam_group.developers.name  # Replace with appropriate group
 }
 
-# Remove the aws_iam_user_policy_attachment resource''')
+# Remove the aws_iam_user_policy_attachment resource
+''')
             
             return {
                 'rule_id': violation['rule_id'],
@@ -352,7 +395,9 @@ resource "aws_iam_group_membership" "{{ user_name }}_membership" {
         return None
     
     def fix_data_at_rest_protection(self, violation: Dict[str, Any], config_type: str) -> Dict[str, Any]:
-        """Generate fix for data at rest protection violation"""
+        """
+        Generate fix for data at rest protection violation
+        """
         
         if config_type == 'terraform':
             resource_type = violation.get('resource_type')
@@ -369,7 +414,8 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "{{ resource_name 
     }
     bucket_key_enabled = true
   }
-}''')
+}
+''')
                 
                 return {
                     'rule_id': violation['rule_id'],
@@ -379,96 +425,222 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "{{ resource_name 
                     'code': template.render(resource_name=resource_name).strip(),
                     'description': f'Add server-side encryption for S3 bucket {resource_name}',
                     'file_path': 'main.tf',
-                    'explanation': 'Enable server-side encryption to protect data at rest in S3.'
+                    'explanation': 'Enable server-side encryption to protect data at rest.'
                 }
-            
             elif resource_type == 'aws_ebs_volume':
+                template = Template('''
+resource "aws_ebs_volume" "{{ resource_name }}" {
+  # ... existing configuration ...
+  encrypted = true
+  kms_key_id = "arn:aws:kms:REGION:ACCOUNT_ID:key/KEY_ID" # Replace with your KMS key ARN
+}
+''')
+                
                 return {
                     'rule_id': violation['rule_id'],
                     'fix_type': 'modify_resource',
                     'resource_type': 'aws_ebs_volume',
                     'resource_name': resource_name,
-                    'code': 'encrypted = true',
+                    'code': template.render(resource_name=resource_name).strip(),
                     'description': f'Enable encryption for EBS volume {resource_name}',
                     'file_path': 'main.tf',
-                    'explanation': 'Enable EBS volume encryption to protect data at rest.'
+                    'explanation': 'Enable encryption for EBS volumes to protect data at rest. Consider using a customer-managed KMS key.'
                 }
         
         return None
     
     def fix_data_in_transit_protection(self, violation: Dict[str, Any], config_type: str) -> Dict[str, Any]:
-        """Generate fix for data in transit protection violation"""
+        """
+        Generate fix for data in transit protection violation
+        """
         
         if config_type == 'terraform':
-            resource_name = violation.get('resource_name', 'example-listener')
+            listener_name = violation.get('resource_name', 'example-listener')
+            
+            template = Template('''
+resource "aws_lb_listener" "{{ listener_name }}" {
+  # ... existing configuration ...
+  protocol = "HTTPS"
+  port = 443
+  ssl_policy = "ELBSecurityPolicy-2016-08"
+  certificate_arn = "arn:aws:acm:REGION:ACCOUNT_ID:certificate/CERT_ID" # Replace with your ACM certificate ARN
+}
+''')
             
             return {
                 'rule_id': violation['rule_id'],
                 'fix_type': 'modify_resource',
                 'resource_type': 'aws_lb_listener',
-                'resource_name': resource_name,
-                'code': 'protocol = "HTTPS"\nport = "443"\ncertificate_arn = "arn:aws:acm:region:account:certificate/certificate-id"',
-                'description': f'Change load balancer listener {resource_name} to use HTTPS',
+                'resource_name': listener_name,
+                'code': template.render(listener_name=listener_name).strip(),
+                'description': f'Configure HTTPS listener for load balancer {listener_name}',
                 'file_path': 'main.tf',
-                'explanation': 'Use HTTPS with SSL certificate to encrypt data in transit.'
+                'explanation': 'Use HTTPS for load balancer listeners to encrypt data in transit.'
             }
         
         return None
     
     def fix_baseline_configuration(self, violation: Dict[str, Any], config_type: str) -> Dict[str, Any]:
-        """Generate fix for baseline configuration violation"""
+        """
+        Generate fix for baseline configuration violation
+        """
         
         if config_type == 'terraform':
+            resource_type = violation.get('resource_type')
             resource_name = violation.get('resource_name', 'example-instance')
-            config_path = violation.get('config_path', '')
             
-            if 'monitoring' in config_path:
-                return {
-                    'rule_id': violation['rule_id'],
-                    'fix_type': 'modify_resource',
-                    'resource_type': 'aws_instance',
-                    'resource_name': resource_name,
-                    'code': 'monitoring = true',
-                    'description': f'Enable detailed monitoring for EC2 instance {resource_name}',
-                    'file_path': 'main.tf',
-                    'explanation': 'Enable detailed monitoring for better visibility into instance performance.'
-                }
-            
-            elif 'ebs_optimized' in config_path:
-                return {
-                    'rule_id': violation['rule_id'],
-                    'fix_type': 'modify_resource',
-                    'resource_type': 'aws_instance',
-                    'resource_name': resource_name,
-                    'code': 'ebs_optimized = true',
-                    'description': f'Enable EBS optimization for EC2 instance {resource_name}',
-                    'file_path': 'main.tf',
-                    'explanation': 'Enable EBS optimization for better storage performance.'
-                }
+            if resource_type == 'aws_instance':
+                # Assuming the violation is for missing monitoring or EBS optimization
+                if 'monitoring' in violation.get('description', ''):
+                    template = Template('''
+resource "aws_instance" "{{ resource_name }}" {
+  # ... existing configuration ...
+  monitoring = true
+}
+''')
+                    return {
+                        'rule_id': violation['rule_id'],
+                        'fix_type': 'modify_resource',
+                        'resource_type': 'aws_instance',
+                        'resource_name': resource_name,
+                        'code': template.render(resource_name=resource_name).strip(),
+                        'description': f'Enable detailed monitoring for EC2 instance {resource_name}',
+                        'file_path': 'main.tf',
+                        'explanation': 'Enable detailed monitoring for better visibility into instance performance and health.'
+                    }
+                elif 'EBS optimized' in violation.get('description', ''):
+                    template = Template('''
+resource "aws_instance" "{{ resource_name }}" {
+  # ... existing configuration ...
+  ebs_optimized = true
+}
+''')
+                    return {
+                        'rule_id': violation['rule_id'],
+                        'fix_type': 'modify_resource',
+                        'resource_type': 'aws_instance',
+                        'resource_name': resource_name,
+                        'code': template.render(resource_name=resource_name).strip(),
+                        'description': f'Enable EBS optimization for EC2 instance {resource_name}',
+                        'file_path': 'main.tf',
+                        'explanation': 'Enable EBS optimization for better I/O performance with EBS volumes.'
+                    }
         
         return None
     
     def fix_network_monitoring(self, violation: Dict[str, Any], config_type: str) -> Dict[str, Any]:
-        """Generate fix for network monitoring violation"""
+        """
+        Generate fix for network monitoring violation (VPC Flow Logs)
+        """
         
         if config_type == 'terraform':
             vpc_name = violation.get('resource_name', 'example-vpc')
             
             template = Template('''
 resource "aws_flow_log" "{{ vpc_name }}_flow_log" {
-  iam_role_arn    = aws_iam_role.flow_log_role.arn
-  log_destination = aws_cloudwatch_log_group.flow_log_group.arn
-  traffic_type    = "ALL"
-  vpc_id          = aws_vpc.{{ vpc_name }}.id
+  log_destination      = aws_s3_bucket.flow_log_bucket.arn
+  traffic_type         = "ALL"
+  vpc_id               = aws_vpc.{{ vpc_name }}.id
+  log_destination_type = "s3"
 }
 
-resource "aws_cloudwatch_log_group" "flow_log_group" {
-  name              = "/aws/vpc/flowlogs"
-  retention_in_days = 30
+resource "aws_s3_bucket" "flow_log_bucket" {
+  bucket = "{{ vpc_name }}-flow-logs-{{ random_id }}" # Replace with a unique bucket name
+  acl    = "private"
+
+  versioning {
+    enabled = true
+  }
 }
 
-resource "aws_iam_role" "flow_log_role" {
-  name = "flow-log-role"
+resource "aws_s3_bucket_policy" "flow_log_bucket_policy" {
+  bucket = aws_s3_bucket.flow_log_bucket.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "AWSLogDeliveryWrite"
+        Effect    = "Allow"
+        Principal = {
+          Service = "delivery.logs.amazonaws.com"
+        }
+        Action = [
+          "s3:PutObject",
+          "s3:GetBucketAcl",
+          "s3:PutObjectAcl"
+        ]
+        Resource = [
+          aws_s3_bucket.flow_log_bucket.arn,
+          "${aws_s3_bucket.flow_log_bucket.arn}/*"
+        ]
+      },
+      {
+        Sid       = "AWSLogDeliveryCheck"
+        Effect    = "Allow"
+        Principal = {
+          Service = "delivery.logs.amazonaws.com"
+        }
+        Action = "s3:GetBucketAcl"
+        Resource = aws_s3_bucket.flow_log_bucket.arn
+      }
+    ]
+  })
+}
+''')
+            
+            # Need a way to generate random_id or take it from context
+            code = template.render(vpc_name=vpc_name, random_id='abcdef123456') # Placeholder for random_id
+            
+            return {
+                'rule_id': violation['rule_id'],
+                'fix_type': 'add_resource',
+                'resource_type': 'aws_flow_log',
+                'resource_name': f'{vpc_name}_flow_log',
+                'code': code.strip(),
+                'description': f'Enable VPC Flow Logs for VPC {vpc_name}',
+                'file_path': 'main.tf',
+                'explanation': 'Enable VPC Flow Logs to monitor network traffic and detect anomalies.'
+            }
+        
+        return None
+    
+    def fix_response_plan(self, violation: Dict[str, Any], config_type: str) -> Dict[str, Any]:
+        """
+        Generate fix for incident response plan violation (CloudTrail)
+        """
+        
+        if config_type == 'terraform':
+            trail_name = violation.get('resource_name', 'example-cloudtrail')
+            
+            template = Template('''
+resource "aws_cloudtrail" "{{ trail_name }}" {
+  name                          = "{{ trail_name }}"
+  s3_bucket_name                = aws_s3_bucket.cloudtrail_bucket.id
+  include_global_service_events = true
+  is_multi_region_trail         = true
+  enable_logging                = true
+
+  # Optional: Enable CloudWatch Logs for real-time monitoring
+  cloud_watch_logs_group_arn    = aws_cloudwatch_log_group.cloudtrail_log_group.arn
+  cloud_watch_logs_role_arn     = aws_iam_role.cloudtrail_cloudwatch_role.arn
+}
+
+resource "aws_s3_bucket" "cloudtrail_bucket" {
+  bucket = "{{ trail_name }}-cloudtrail-{{ random_id }}" # Replace with a unique bucket name
+  acl    = "private"
+
+  versioning {
+    enabled = true
+  }
+}
+
+resource "aws_cloudwatch_log_group" "cloudtrail_log_group" {
+  name = "CloudTrail/{{ trail_name }}"
+  retention_in_days = 90
+}
+
+resource "aws_iam_role" "cloudtrail_cloudwatch_role" {
+  name = "cloudtrail-cloudwatch-role-{{ random_id }}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -477,134 +649,80 @@ resource "aws_iam_role" "flow_log_role" {
         Action = "sts:AssumeRole"
         Effect = "Allow"
         Principal = {
-          Service = "vpc-flow-logs.amazonaws.com"
+          Service = "cloudtrail.amazonaws.com"
         }
       }
     ]
   })
 }
 
-resource "aws_iam_role_policy" "flow_log_policy" {
-  name = "flow-log-policy"
-  role = aws_iam_role.flow_log_role.id
+resource "aws_iam_role_policy" "cloudtrail_cloudwatch_policy" {
+  name = "cloudtrail-cloudwatch-policy-{{ random_id }}"
+  role = aws_iam_role.cloudtrail_cloudwatch_role.id
 
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
         Action = [
-          "logs:CreateLogGroup",
           "logs:CreateLogStream",
-          "logs:PutLogEvents",
-          "logs:DescribeLogGroups",
-          "logs:DescribeLogStreams"
+          "logs:PutLogEvents"
         ]
-        Effect   = "Allow"
-        Resource = "*"
+        Effect = "Allow"
+        Resource = "${aws_cloudwatch_log_group.cloudtrail_log_group.arn}:*"
       }
     ]
   })
-}''')
+}
+''')
             
-            return {
-                'rule_id': violation['rule_id'],
-                'fix_type': 'add_resource',
-                'resource_type': 'aws_flow_log',
-                'resource_name': f'{vpc_name}_flow_log',
-                'code': template.render(vpc_name=vpc_name).strip(),
-                'description': f'Add VPC flow logs for {vpc_name}',
-                'file_path': 'main.tf',
-                'explanation': 'Enable VPC flow logs to monitor network traffic for security analysis.'
-            }
-        
-        return None
-    
-    def fix_response_plan(self, violation: Dict[str, Any], config_type: str) -> Dict[str, Any]:
-        """Generate fix for response plan violation"""
-        
-        if config_type == 'terraform':
-            template = Template('''
-resource "aws_cloudtrail" "main_trail" {
-  name           = "main-cloudtrail"
-  s3_bucket_name = aws_s3_bucket.cloudtrail_bucket.bucket
-
-  event_selector {
-    read_write_type                 = "All"
-    include_management_events       = true
-    data_resource {
-      type   = "AWS::S3::Object"
-      values = ["arn:aws:s3:::*/*"]
-    }
-  }
-
-  enable_logging = true
-}
-
-resource "aws_s3_bucket" "cloudtrail_bucket" {
-  bucket        = "my-cloudtrail-bucket-${random_id.bucket_suffix.hex}"
-  force_destroy = true
-}
-
-resource "random_id" "bucket_suffix" {
-  byte_length = 4
-}''')
+            code = template.render(trail_name=trail_name, random_id='abcdef123456') # Placeholder for random_id
             
             return {
                 'rule_id': violation['rule_id'],
                 'fix_type': 'add_resource',
                 'resource_type': 'aws_cloudtrail',
-                'resource_name': 'main_trail',
-                'code': template.render().strip(),
-                'description': 'Add CloudTrail for audit logging',
+                'resource_name': trail_name,
+                'code': code.strip(),
+                'description': f'Configure AWS CloudTrail for {trail_name}',
                 'file_path': 'main.tf',
-                'explanation': 'Enable CloudTrail to log API calls for security monitoring and incident response.'
+                'explanation': 'Configure AWS CloudTrail to enable logging and monitoring of AWS API calls, essential for incident response.'
             }
         
         return None
     
-    def _generate_instructions(self, fixes: List[Dict[str, Any]], config_type: str) -> List[str]:
-        """Generate human-readable instructions for applying fixes"""
+    def _generate_instructions(self, fixes: List[Dict[str, Any]], config_type: str) -> str:
+        """
+        Generate human-readable instructions for applying fixes
+        """
+        instructions = []
         
-        instructions = [
-            f"Instructions for applying {len(fixes)} remediation fixes:",
-            "",
-            "1. Review each fix carefully before applying",
-            "2. Test changes in a development environment first",
-            "3. Apply fixes in order of severity (Critical > High > Medium > Low)",
-            "4. Validate configurations after applying fixes",
-            ""
-        ]
+        if not fixes:
+            return "No automated fixes were generated. Manual review is required."
         
-        if config_type == 'terraform':
-            instructions.extend([
-                "Terraform-specific instructions:",
-                "- Run 'terraform plan' to preview changes",
-                "- Run 'terraform apply' to apply changes",
-                "- Use 'terraform validate' to check syntax",
-                ""
-            ])
+        instructions.append(f"## Remediation Instructions for {config_type.upper()} Configuration\n")
+        instructions.append("The following automated fixes have been generated. Please review them carefully before applying.\n")
         
-        # Group fixes by type
-        fix_types = {}
-        for fix in fixes:
-            fix_type = fix.get('fix_type', 'unknown')
-            if fix_type not in fix_types:
-                fix_types[fix_type] = []
-            fix_types[fix_type].append(fix)
+        for i, fix in enumerate(fixes):
+            instructions.append(f"### Fix {i+1}: {fix['description']}\n")
+            instructions.append(f"**Rule ID:** {fix['rule_id']}\n")
+            instructions.append(f"**Resource Type:** {fix['resource_type']}\n")
+            instructions.append(f"**Resource Name:** {fix['resource_name']}\n")
+            instructions.append(f"**Explanation:** {fix['explanation']}\n")
+            instructions.append(f"**Suggested File:** {fix['file_path']}\n")
+            instructions.append("```terraform\n" if config_type == 'terraform' else "```yaml\n")
+            instructions.append(f"{fix['code']}\n")
+            instructions.append("```\n")
+            instructions.append("\n")
+            
+        instructions.append("## Manual Review and Application\n")
+        instructions.append("1.  **Review the generated code:** Carefully examine each fix to ensure it aligns with your infrastructure requirements and does not introduce unintended side effects.\n")
+        instructions.append("2.  **Apply the changes:** Copy the generated code into the specified files in your repository.\n")
+        instructions.append("3.  **Test the changes:** Deploy the updated configuration to a staging environment and thoroughly test its functionality and security posture.\n")
+        instructions.append("4.  **Commit and Deploy:** Once satisfied, commit the changes to your version control system and deploy to production.\n")
+        instructions.append("\n**Important:** For critical issues, consider manual remediation and thorough testing before applying automated fixes.\n")
         
-        for fix_type, type_fixes in fix_types.items():
-            if fix_type == 'add_resource':
-                instructions.append(f"Add {len(type_fixes)} new resources:")
-                for fix in type_fixes:
-                    instructions.append(f"  - {fix['resource_type']}.{fix['resource_name']}")
-            elif fix_type == 'modify_resource':
-                instructions.append(f"Modify {len(type_fixes)} existing resources:")
-                for fix in type_fixes:
-                    instructions.append(f"  - {fix['resource_type']}.{fix['resource_name']}")
-            elif fix_type == 'manual_action':
-                instructions.append(f"Manual actions required for {len(type_fixes)} items:")
-                for fix in type_fixes:
-                    instructions.append(f"  - {fix['description']}")
-        
-        return instructions
+        return "\n".join(instructions)
+
+
 

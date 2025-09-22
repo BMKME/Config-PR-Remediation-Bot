@@ -1,3 +1,17 @@
+# Copyright 2024 Manus AI
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """
 Advanced HCL Parser with safer replacement logic
 Implements proper HCL parsing and serialization for robust configuration fixes
@@ -72,7 +86,9 @@ class AdvancedHCLParser:
             return self._fallback_regex_fix(hcl_content)
     
     def _fix_s3_bucket_config(self, bucket_name: str, bucket_config: Dict[str, Any]) -> List[Dict[str, Any]]:
-        """Fix S3 bucket configuration issues"""
+        """
+        Fix S3 bucket configuration issues
+        """
         fixes = []
         
         # Check for public ACL
@@ -100,7 +116,9 @@ class AdvancedHCLParser:
         return fixes
     
     def _fix_s3_public_access_block(self, pab_name: str, pab_config: Dict[str, Any]) -> List[Dict[str, Any]]:
-        """Fix S3 public access block configuration"""
+        """
+        Fix S3 public access block configuration
+        """
         fixes = []
         
         public_access_settings = [
@@ -125,13 +143,15 @@ class AdvancedHCLParser:
         return fixes
     
     def _apply_regex_fixes(self, content: str, fixes: List[Dict[str, Any]]) -> str:
-        """Apply fixes using regex replacement (fallback method)"""
+        """
+        Apply fixes using regex replacement (fallback method)
+        """
         fixed_content = content
         
         for fix in fixes:
             if fix['type'] == 'acl_fix':
                 # Replace ACL setting
-                pattern = r'acl\s*=\s*["\']public-read["\']'
+                pattern = r'acl\s*=\s*["\\]public-read["\\]'
                 replacement = 'acl = "private"'
                 fixed_content = re.sub(pattern, replacement, fixed_content)
             
@@ -145,12 +165,14 @@ class AdvancedHCLParser:
         return fixed_content
     
     def _fallback_regex_fix(self, hcl_content: str) -> Tuple[str, List[Dict[str, Any]]]:
-        """Fallback regex-based fix when HCL parsing is not available"""
+        """
+        Fallback regex-based fix when HCL parsing is not available
+        """
         fixes_applied = []
         fixed_content = hcl_content
         
         # Fix S3 public ACL
-        acl_pattern = r'acl\s*=\s*["\']public-read["\']'
+        acl_pattern = r'acl\s*=\s*["\\]public-read["\\]'
         if re.search(acl_pattern, fixed_content, re.IGNORECASE):
             fixed_content = re.sub(acl_pattern, 'acl = "private"', fixed_content, flags=re.IGNORECASE)
             fixes_applied.append({
@@ -183,15 +205,9 @@ class AdvancedHCLParser:
     def check_idempotency(self, hcl_content: str) -> bool:
         """
         Check if fixes have already been applied (idempotency check)
-        
-        Args:
-            hcl_content: HCL content to check
-            
-        Returns:
-            True if content is already compliant, False if fixes are needed
         """
         # Check for public ACL
-        if re.search(r'acl\s*=\s*["\']public-read["\']', hcl_content, re.IGNORECASE):
+        if re.search(r'acl\s*=\s*["\\]public-read["\\]', hcl_content, re.IGNORECASE):
             return False
         
         # Check for disabled public access block settings
@@ -211,12 +227,6 @@ class AdvancedHCLParser:
     def validate_terraform_syntax(self, hcl_content: str) -> Tuple[bool, Optional[str]]:
         """
         Validate Terraform syntax (basic validation)
-        
-        Args:
-            hcl_content: HCL content to validate
-            
-        Returns:
-            Tuple of (is_valid, error_message)
         """
         try:
             # Basic syntax checks
@@ -234,7 +244,7 @@ class AdvancedHCLParser:
             
             # Check for basic resource structure
             if 'resource' in hcl_content:
-                resource_pattern = r'resource\s+"[^"]+"\s+"[^"]+"\s*{'
+                resource_pattern = r'resource\s+"[^"]+"\s+"[^"]+"\s*{\s*'
                 if not re.search(resource_pattern, hcl_content):
                     return False, "Invalid resource syntax"
             
@@ -246,17 +256,11 @@ class AdvancedHCLParser:
     def extract_resources(self, hcl_content: str) -> List[Dict[str, Any]]:
         """
         Extract resource information from HCL content
-        
-        Args:
-            hcl_content: HCL content to parse
-            
-        Returns:
-            List of resource dictionaries
         """
         resources = []
         
         # Regex to find resource blocks
-        resource_pattern = r'resource\s+"([^"]+)"\s+"([^"]+)"\s*{([^}]*)}'
+        resource_pattern = r'resource\s+"([^"]+)"\s+"([^"]+)"\s*{\s*([^}]*)}'
         
         matches = re.finditer(resource_pattern, hcl_content, re.DOTALL)
         
@@ -273,4 +277,5 @@ class AdvancedHCLParser:
             })
         
         return resources
+
 

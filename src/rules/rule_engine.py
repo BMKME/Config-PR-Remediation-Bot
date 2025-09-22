@@ -1,3 +1,17 @@
+# Copyright 2024 Manus AI
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """
 Rule Engine for scalable compliance rules
 Supports dynamic rule loading and multi-framework compliance
@@ -206,29 +220,29 @@ class ScalableRuleEngine:
         """Load rules from YAML or JSON file"""
         
         try:
-            with open(file_path, 'r') as f:
-                if file_path.endswith('.yaml') or file_path.endswith('.yml'):
+            with open(file_path, "r") as f:
+                if file_path.endswith(".yaml") or file_path.endswith(".yml"):
                     data = yaml.safe_load(f)
                 else:
                     data = json.load(f)
             
-            for rule_data in data.get('rules', []):
+            for rule_data in data.get("rules", []):
                 rule = ComplianceRule(
-                    rule_id=rule_data['rule_id'],
-                    name=rule_data['name'],
-                    description=rule_data['description'],
-                    severity=Severity(rule_data['severity']),
-                    framework=Framework(rule_data['framework']),
-                    resource_types=rule_data['resource_types'],
-                    check_function=rule_data['check_function'],
-                    fix_function=rule_data.get('fix_function'),
-                    enabled=rule_data.get('enabled', True),
-                    tags=rule_data.get('tags', []),
-                    references=rule_data.get('references', [])
+                    rule_id=rule_data["rule_id"],
+                    name=rule_data["name"],
+                    description=rule_data["description"],
+                    severity=Severity(rule_data["severity"]),
+                    framework=Framework(rule_data["framework"]),
+                    resource_types=rule_data["resource_types"],
+                    check_function=rule_data["check_function"],
+                    fix_function=rule_data.get("fix_function"),
+                    enabled=rule_data.get("enabled", True),
+                    tags=rule_data.get("tags", []),
+                    references=rule_data.get("references", [])
                 )
                 self.register_rule(rule)
             
-            self.logger.info(f"Loaded {len(data.get('rules', []))} rules from {file_path}")
+            self.logger.info(f"Loaded {len(data.get("rules", []))} rules from {file_path}")
             
         except Exception as e:
             self.logger.error(f"Failed to load rules from {file_path}: {str(e)}")
@@ -248,7 +262,9 @@ class ScalableRuleEngine:
     
     def check_resource(self, resource_type: str, resource_data: Dict[str, Any], 
                       config: Dict[str, Any] = None) -> List[Dict[str, Any]]:
-        """Check a resource against applicable rules"""
+        """
+        Check a resource against applicable rules
+        """
         
         if config is None:
             config = {}
@@ -262,15 +278,15 @@ class ScalableRuleEngine:
                 if checker and checker.check(resource_data, config):
                     violation_details = checker.get_violation_details(resource_data)
                     violations.append({
-                        'rule_id': rule.rule_id,
-                        'rule_name': rule.name,
-                        'description': rule.description,
-                        'severity': rule.severity.value,
-                        'framework': rule.framework.value,
-                        'resource_type': resource_type,
-                        'tags': rule.tags,
-                        'references': rule.references,
-                        'violation_details': violation_details
+                        "rule_id": rule.rule_id,
+                        "rule_name": rule.name,
+                        "description": rule.description,
+                        "severity": rule.severity.value,
+                        "framework": rule.framework.value,
+                        "resource_type": resource_type,
+                        "tags": rule.tags,
+                        "references": rule.references,
+                        "violation_details": violation_details
                     })
             except Exception as e:
                 self.logger.error(f"Error checking rule {rule.rule_id}: {str(e)}")
@@ -279,7 +295,9 @@ class ScalableRuleEngine:
     
     def fix_violations(self, violations: List[Dict[str, Any]], 
                       resource_data: Dict[str, Any], config: Dict[str, Any] = None) -> Dict[str, Any]:
-        """Fix violations and return the fixed resource data"""
+        """
+        Fix violations and return the fixed resource data
+        """
         
         if config is None:
             config = {}
@@ -288,77 +306,81 @@ class ScalableRuleEngine:
         fixes_applied = []
         
         for violation in violations:
-            rule_id = violation['rule_id']
+            rule_id = violation["rule_id"]
             fixer = self.fixers.get(rule_id)
             
             if fixer:
                 try:
                     fixed_data = fixer.fix(fixed_data, config)
                     fixes_applied.append({
-                        'rule_id': rule_id,
-                        'description': fixer.get_fix_description(),
-                        'severity': violation['severity']
+                        "rule_id": rule_id,
+                        "description": fixer.get_fix_description(),
+                        "severity": violation["severity"]
                     })
                 except Exception as e:
                     self.logger.error(f"Error fixing violation {rule_id}: {str(e)}")
         
         return {
-            'fixed_data': fixed_data,
-            'fixes_applied': fixes_applied
+            "fixed_data": fixed_data,
+            "fixes_applied": fixes_applied
         }
     
     def get_compliance_summary(self, framework: Framework = None) -> Dict[str, Any]:
-        """Get compliance summary statistics"""
+        """
+        Get compliance summary statistics
+        """
         
         rules_to_check = self.rules.values()
         if framework:
             rules_to_check = self.get_rules_by_framework(framework)
         
         summary = {
-            'total_rules': len(list(rules_to_check)),
-            'enabled_rules': len([r for r in rules_to_check if r.enabled]),
-            'by_severity': {
-                'CRITICAL': len([r for r in rules_to_check if r.severity == Severity.CRITICAL]),
-                'HIGH': len([r for r in rules_to_check if r.severity == Severity.HIGH]),
-                'MEDIUM': len([r for r in rules_to_check if r.severity == Severity.MEDIUM]),
-                'LOW': len([r for r in rules_to_check if r.severity == Severity.LOW]),
-                'INFO': len([r for r in rules_to_check if r.severity == Severity.INFO])
+            "total_rules": len(list(rules_to_check)),
+            "enabled_rules": len([r for r in rules_to_check if r.enabled]),
+            "by_severity": {
+                "CRITICAL": len([r for r in rules_to_check if r.severity == Severity.CRITICAL]),
+                "HIGH": len([r for r in rules_to_check if r.severity == Severity.HIGH]),
+                "MEDIUM": len([r for r in rules_to_check if r.severity == Severity.MEDIUM]),
+                "LOW": len([r for r in rules_to_check if r.severity == Severity.LOW]),
+                "INFO": len([r for r in rules_to_check if r.severity == Severity.INFO])
             },
-            'by_framework': {}
+            "by_framework": {}
         }
         
         for fw in Framework:
             fw_rules = [r for r in rules_to_check if r.framework == fw]
-            summary['by_framework'][fw.value] = len(fw_rules)
+            summary["by_framework"][fw.value] = len(fw_rules)
         
         return summary
     
-    def export_rules(self, file_path: str, format: str = 'yaml'):
-        """Export rules to file"""
+    def export_rules(self, file_path: str, format: str = "yaml"):
+        """
+        Export rules to file
+        """
         
         rules_data = {
-            'rules': []
+            "rules": []
         }
         
         for rule in self.rules.values():
             rule_dict = {
-                'rule_id': rule.rule_id,
-                'name': rule.name,
-                'description': rule.description,
-                'severity': rule.severity.value,
-                'framework': rule.framework.value,
-                'resource_types': rule.resource_types,
-                'check_function': rule.check_function,
-                'fix_function': rule.fix_function,
-                'enabled': rule.enabled,
-                'tags': rule.tags,
-                'references': rule.references
+                "rule_id": rule.rule_id,
+                "name": rule.name,
+                "description": rule.description,
+                "severity": rule.severity.value,
+                "framework": rule.framework.value,
+                "resource_types": rule.resource_types,
+                "check_function": rule.check_function,
+                "fix_function": rule.fix_function,
+                "enabled": rule.enabled,
+                "tags": rule.tags,
+                "references": rule.references
             }
-            rules_data['rules'].append(rule_dict)
+            rules_data["rules"].append(rule_dict)
         
         try:
-            with open(file_path, 'w') as f:
-                if format.lower() == 'yaml':
+            with open(file_path, "w") as f:
+                if format.lower() == "yaml":
                     yaml.dump(rules_data, f, default_flow_style=False)
                 else:
                     json.dump(rules_data, f, indent=2)
@@ -369,16 +391,21 @@ class ScalableRuleEngine:
             self.logger.error(f"Failed to export rules: {str(e)}")
     
     def _register_built_in_checkers(self):
-        """Register built-in rule checkers"""
+        """
+        Register built-in rule checkers
+        """
         
         # S3 checkers would be implemented here
         # For brevity, showing structure only
         pass
     
     def _register_built_in_fixers(self):
-        """Register built-in rule fixers"""
+        """
+        Register built-in rule fixers
+        """
         
         # S3 fixers would be implemented here
         # For brevity, showing structure only
         pass
+
 

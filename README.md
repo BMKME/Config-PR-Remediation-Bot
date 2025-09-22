@@ -1,5 +1,5 @@
 IaC Auto-Remediation Bot 🤖
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
@@ -26,6 +26,22 @@ Result: Your infrastructure gets safer, faster, and your developers are freed fr
 🤖 DevOps Workflow Integration: Creates PRs, posts notifications to Slack/Microsoft Teams, and waits for human approval—fitting perfectly into your existing CI/CD governance.
 
 📜 Audit Trail: Logs every action—from alert to fix to merge—for compliance and debugging.
+
+## 🎯 Business Strategy with Dual Licensing
+
+This project employs a dual-licensing model to foster community growth while ensuring a sustainable path for enterprise-grade features and support.
+
+### Open Source (Apache 2.0) Benefits:
+*   **Community Growth**: Developers can use and contribute freely, fostering innovation.
+*   **GitHub Visibility**: Enhances discoverability and adoption within the open-source ecosystem.
+*   **Enterprise Evaluation**: Companies can evaluate the core platform before committing to commercial solutions.
+*   **Ecosystem Building**: Encourages integrations and extensions by the community.
+
+### Commercial License Benefits:
+*   **Revenue Stream**: Provides a sustainable business model through enterprise subscriptions and services.
+*   **Advanced Features**: Allows for the development of proprietary features tailored for large organizations.
+*   **Professional Support**: Offers Service Level Agreements (SLAs) and dedicated support channels.
+*   **Customization**: Enables tailored solutions and bespoke development for specific enterprise needs.
 
 🛠️ How It Works
 
@@ -139,15 +155,15 @@ The provided `poc_s3_fixer.py` is a minimal proof-of-concept. The full system is
 *   **Dashboard**: A web UI to view bot activity and metrics.
 
 🤝 Contributing
-We love contributions! Whether it\'s adding a new fixer, improving documentation, or reporting a bug, please read our [Contributing Guide](CONTRIBUTING.md). Please note that this project follows a [Code of Conduct](CODE_OF_CONDUCT.md).
+We love contributions! Whether it\\'s adding a new fixer, improving documentation, or reporting a bug, please read our [Contributing Guide](CONTRIBUTING.md). Please note that this project follows a [Code of Conduct](CODE_OF_CONDUCT.md).
 
 1.  Fork the Project
 2.  Create your Feature Branch (`git checkout -b feature/AmazingFixer`)
-3.  Commit your Changes (`git commit -m \'feat: add fixer for insecure security groups\'`) 
+3.  Commit your Changes (`git commit -m \\'feat: add fixer for insecure security groups\\'`) 
 4.  Push to the Branch (`git push origin feature/AmazingFixer`)
 5.  Open a Pull Request
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is dual-licensed under the **Apache 2.0 License** (for open-source use) and a **Commercial License** (for enterprise features and support). See the [LICENSE](LICENSE) and [COMMERCIAL_LICENSE.md](COMMERCIAL_LICENSE.md) files for details.
 
