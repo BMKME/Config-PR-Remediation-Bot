@@ -24,12 +24,12 @@ Contributing
 
 License Information
 
-1. Executive Summary {#executive-summary}
+1. Executive Summary
 The IaC Auto-Remediation Bot transforms infrastructure-as-code (IaC) security misconfigurations into automatically generated, validated, and ready-to-merge pull requests. This innovative solution moves beyond traditional security scanning by proactively fixing identified issues with safe, compliant code patches.
 
 Key Value Proposition: Stop just flagging problems; start fixing them autonomously.
 
-2. Problem Statement & Solution {#problem-solution}
+2. Problem Statement & Solution
 The Problem
 Traditional IaC security scanners (Checkov, Terrascan, tfsec) excel at identifying issues but leave the tedious, error-prone remediation work to already-busy engineers. This creates:
 
